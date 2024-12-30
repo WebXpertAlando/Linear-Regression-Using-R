@@ -1,0 +1,76 @@
+#Load the data set
+
+autos_sales<-read.csv("C:/Users/WebXpert/autos.csv")
+autos_sales
+
+# Summarize the dataset
+summary(autos_sales)
+
+# Display dataset
+head(autos_sales)
+
+plot(autos)
+
+
+# Create the scatter plots
+plot(autos$year, autos$selling_price,
+     xlab = "Year",
+     ylab = "Selling Price",
+     main = "Scatter Plot of Year  vs Selling Price")
+
+plot(autos$km_driven, autos$selling_price,
+     xlab = "Kilometer- Driven",
+     ylab = "Selling Price",
+     main = "Scatter Plot of Kilometer- Driven  vs Selling Price")
+
+
+
+
+
+# Split the data into Train and Test Sets
+set.seed(7)
+library(caTools)
+
+split<-sample.split(autos_sales, SplitRatio =0.8)
+split
+train<- subset(autos_sales, split=="TRUE")
+test<-subset(autos_sales, split=="FALSE")
+
+# Show Train
+train
+
+# Show Test
+test
+
+# # Fitting Simple Linear Regression to the Training set
+model<-lm(formula = selling_price ~ .,data = train)
+
+# Model Summary
+summary(model)
+
+
+# Predict using the linear regression model
+predict_selling_price <- predict(model, data=test)
+print(predict_selling_price)
+
+
+# Visualising the Training set results
+ggplot() + geom_point(aes(x = train$year, 
+                          y = train$selling_price), colour = 'red') +
+  geom_line(aes(x = train$year,
+                y = predict(model, data = train)), colour = 'blue') +
+  
+  ggtitle('Selling Price vs Year (Training set)') +
+  xlab('Year') +
+  ylab('Selling Price')
+
+
+# Visualising the Test set results
+ggplot() + geom_point(aes(x = test$year, 
+                          y = test$selling_price), colour = 'red') +
+  geom_line(aes(x = test$year,
+                y = predict(model, data = test)), colour = 'blue') +
+  
+  ggtitle('Selling Price vs Year (Test set)') +
+  xlab('Year') +
+  ylab('Selling Price')
